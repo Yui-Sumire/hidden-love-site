@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hidden Love - Análise de Palavras-Chave</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #ffe6f0;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #f8a1c2;
+      color: #660033;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #cc0055;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 8px;
+      border: 1px solid #cc6699;
+      padding: 10px;
+      font-size: 16px;
+      resize: vertical;
+      box-sizing: border-box;
+      font-family: inherit;
+      color: #660033;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #cc0066;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: 700;
+    }
+
+    button:hover {
+      background-color: #a30055;
+    }
+
+    #nuvem-palavras {
+      margin-top: 20px;
+      min-height: 60px;
+      background: #ffe6f7;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: inset 0 0 5px #cc6699;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      user-select: none;
+    }
+
+    #nuvem-palavras span {
+      cursor: pointer;
+      color: #cc0066;
+      transition: color 0.2s ease;
+      user-select: none;
+      border-bottom: 1.5px dotted #cc6699;
+      padding: 3px 6px;
+      border-radius: 5px;
+    }
+
+    #nuvem-palavras span:hover {
+      color: #a30055;
+    }
+
+    #definicao-palavra {
+      margin-top: 20px;
+      background: #ffd6e8;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 6px #cc6699;
+      font-size: 16px;
+      font-weight: 600;
+      min-height: 70px;
+      text-align: center;
+    }
+
+    #carrossel-container {
+      margin-top: 20px;
+      display: none;
+      text-align: center;
+      position: relative;
+    }
+
+    #carrossel-img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 15px;
+      box-shadow: 0 0 12px #cc6699aa;
+      user-select: none;
+    }
+
+    .btn-carrossel {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #cc0066cc;
+      border: none;
+      color: white;
+      font-size: 26px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-carrossel:hover {
+      background: #a30055cc;
+    }
+
+    #btn-anterior {
+      left: 10px;
+    }
+
+    #btn-proximo {
+      right: 10px;
+    }
+
+    #dicionario {
+      margin-top: 25px;
+      background: #ffe6f7;
+      border-radius: 10px;
+      box-shadow: inset 0 0 8px #cc6699aa;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      user-select: none;
+    }
+
+    #dicionario span {
+      cursor: pointer;
+      color: #cc0066;
+      font-weight: 700;
+      border-bottom: 1.5px dotted #cc6699;
+      padding: 5px 8px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    #dicionario span:hover {
+      background-color: #ffb3d9aa;
+      color: #800040;
+    }
+
+    #video-carrossel-container {
+      margin-top: 30px;
+      text-align: center;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
+    #video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 12px #cc6699bb;
+    }
+
+    #video-wrapper video,
+    #video-wrapper iframe {
+      width: 100%;
+      height: 360px;
+      border: none;
+      display: block;
+    }
+
+    #btn-video-anterior,
+    #btn-video-proximo {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #cc0066cc;
+      border: none;
+      color: white;
+      font-size: 26px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      z-index: 10;
+    }
+
+    #btn-video-anterior:hover,
+    #btn-video-proximo:hover {
+      background: #a30055cc;
+    }
+
+    #btn-video-anterior {
+      left: 10px;
+    }
+
+    #btn-video-proximo {
+      right: 10px;
+    }
+
+    /* 🌟 CORAÇÕES FLUTUANTES */
+    .coracao {
+      position: fixed;
+      font-size: 24px;
+      animation: flutuar 5s ease-in-out forwards;
+      z-index: 9999;
+      pointer-events: none;
+      top: 100%;
+      opacity: 0.8;
+    }
+
+    @keyframes flutuar {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+   <h1>🌸Hidden Love - Análise de Palavras-Chave🌸</h1>
+
+  <label for="input-texto">Digite um trecho do manhua ou carta:</label>
+  <textarea id="input-texto" placeholder="Cole seu trecho aqui..."></textarea>
+  <button onclick="analisarTexto()">Analisar Palavras-Chave</button>
+
+  <div id="nuvem-palavras" title="Clique nas palavras para ver definição"></div>
+
+  <div id="definicao-palavra">Clique em uma palavra para ver sua definição aqui.</div>
+
+  <div id="carrossel-container">
+    <button class="btn-carrossel" id="btn-anterior" onclick="anteriorImagem()">‹</button>
+    <img id="carrossel-img" src="" alt="Imagem do carrossel" />
+    <button class="btn-carrossel" id="btn-proximo" onclick="proximoImagem()">›</button>
+  </div>
+
+  <div id="dicionario" title="Dicionário de palavras-chave"></div>
+
+  <div id="video-carrossel-container">
+    <button class="btn-carrossel" id="btn-video-anterior" onclick="videoAnterior()">‹</button>
+    <div id="video-wrapper">
+      <video id="carrossel-video" controls></video>
+      <iframe id="carrossel-iframe" allowfullscreen></iframe>
+    </div>
+    <button class="btn-carrossel" id="btn-video-proximo" onclick="videoProximo()">›</button>
+  </div>
+
+  <script>
+    const palavrasManhua = {
+      "amor": {
+      definicao: "Sentimento intenso de afeição e carinho entre os personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/d0/e9/08/d0e90882ff605f9821a837986d455d66.jpg"
+      ]
+    },
+    "segredo": {
+      definicao: "Mistério ou informação guardada entre personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/5d/8e/44/5d8e447c7b0ab8082eb307a63987aafd.jpg",
+        "https://i.pinimg.com/736x/09/77/f1/0977f19168844b3730f93daa534d313e.jpg"
+      ]
+    },
+    "lágrimas": {
+      definicao: "Expressão de emoção forte, como tristeza ou alegria.",
+      imagens: [
+        "https://i.pinimg.com/736x/07/43/e4/0743e46a3122b2e76f83533650fe21c9.jpg",
+        "https://i.pinimg.com/736x/e5/83/b5/e583b54531ca9f41d639d58bc6a8f41c.jpg",
+        "https://i.pinimg.com/736x/43/60/70/436070fa527d5d8bfad61873b48a7949.jpg"
+      ]
+    },
+    "paixão": {
+      definicao: "Sentimento ardente que motiva ações dos personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/ea/f5/c3/eaf5c33d605cb0284630e62ca277fb45.jpg"
+      ]
+    },
+    "jardim": {
+      definicao: "Local que simboliza paz, beleza e encontros importantes.",
+      imagens: [
+        "https://i.pinimg.com/736x/7b/55/b6/7b55b6c46357b7614424f2474c20ea71.jpg"
+      ]
+    },
+    "escola": {
+      definicao: "Ambiente onde os personagens estudam e convivem.",
+      imagens: [
+        "https://i.pinimg.com/736x/c2/22/ba/c222bad7b43ae07f58832c1841c6c85a.jpg"
+      ]
+    },
+    "duan jiaxu": {
+      definicao: "Nome do protagonista masculino, personagem principal da história — ele é a calma no caos de Sang Zhi, o sorriso gentil que derrete corações. Duan Jiaxu carrega nas palavras doces e no olhar protetor o tipo de amor que cresce devagar, mas se torna inesquecível.",
+      imagens: [
+        "https://i.pinimg.com/736x/f0/d1/c7/f0d1c7baa0d6fe7b37f9b9ea34d34d72.jpg"
+      ]
+    },
+    "sang zhi": {
+      definicao: "Nome da protagonista feminina, foco principal da narrativa. Sang Zhi é a alma vibrante do manhua — cheia de sonhos, medos e uma força silenciosa que conquista corações. Ela é o equilíbrio entre a doçura e a coragem, a luz que ilumina o caminho de Duan Jiaxu.",
+      imagens: [
+        "https://i.pinimg.com/736x/2d/33/65/2d33657146c5c9af809ae595cd630b6d.jpg"
+      ]
+    },
+    "raposa": {
+      definicao: "Símbolo de inteligência ou afeto em algumas cenas.",
+      imagens: [
+        "https://i.pinimg.com/736x/61/aa/b3/61aab37db80958cb4aad1834905cdb51.jpg"
+      ]
+    },
+    "criança": {
+      definicao: "Representação de pureza, inocência ou lembranças do passado dos personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/cf/28/f9/cf28f9d5c4cfc45e11419e075195637a.jpg"
+      ]
+    },
+    "irmão mais velho": {
+  definicao: "Figura protetora e carinhosa, importante na dinâmica entre personagens.",
+  imagens: [
+    "https://i.pinimg.com/736x/79/bf/4d/79bf4dc3e97217adb34f8690a3b589b4.jpg",
+    "https://i.pinimg.com/736x/00/05/3c/00053c14a38dd77c541877eaac4d31fd.jpg"
+  ]
+ },
+ "timidez": {
+  definicao: "Sentimento de vergonha ou hesitação comum entre os protagonistas.",
+  imagens: [
+  "https://i.pinimg.com/736x/82/79/2b/82792bbcd6cfd76b8b86c44c66b85988.jpg",
+  "https://i.pinimg.com/736x/7a/d3/2b/7ad32b8527ff47f6b7e02481838eadc7.jpg",
+  "https://i.pinimg.com/736x/49/99/e0/4999e0531428c36ca684e013fec6da32.jpg",
+  "https://i.pinimg.com/736x/ce/98/fd/ce98fdc674a3ba0ed2bcea3bb87dadec.jpg"
+      ]
+    },
+    "amizade": {
+      definicao: "Laços de confiança e afeto entre personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/e5/6b/ad/e56bad89670be7a7e4ee8bb1f19c2082.jpg"
+      ]
+    },
+    "mensagens": {
+      definicao: "Comunicação importante que move a trama.",
+      imagens: [
+        "https://i.pinimg.com/736x/c2/0f/65/c20f65217ee7a11ba4b727bd1aa83b70.jpg"
+      ]
+    },
+    "promessa": {
+      definicao: "Compromissos e juramentos que marcam os personagens.",
+      imagens: [
+        "https://i.pinimg.com/736x/ad/a4/f6/ada4f6b052aeaf615e6ae0d01c163769.jpg",
+        "https://i.pinimg.com/736x/10/3c/ec/103cec9cd899b5d176e03f72f31a0e40.jpg"
+      ]
+    },
+    "gege": {
+      definicao: "Termo carinhoso para irmão mais velho.",
+      imagens: [
+        "https://i.pinimg.com/736x/6e/cd/b2/6ecdb247338fb7edb658a60f5bf2f203.jpg"
+      ]
+    }
+  };
+
+
+    let imagensCarrossel = [];
+    let indiceImagem = 0;
+
+    function exibirImagem() {
+      const imgElement = document.getElementById("carrossel-img");
+      if(imagensCarrossel.length > 0){
+        imgElement.src = imagensCarrossel[indiceImagem];
+        document.getElementById("carrossel-container").style.display = "block";
+      } else {
+        document.getElementById("carrossel-container").style.display = "none";
+      }
+    }
+
+    function proximoImagem() {
+      if(imagensCarrossel.length === 0) return;
+      indiceImagem = (indiceImagem + 1) % imagensCarrossel.length;
+      exibirImagem();
+    }
+
+    function anteriorImagem() {
+      if(imagensCarrossel.length === 0) return;
+      indiceImagem = (indiceImagem - 1 + imagensCarrossel.length) % imagensCarrossel.length;
+      exibirImagem();
+    }
+
+    function mostrarDefinicao(palavra) {
+      palavra = palavra.toLowerCase();
+      const defDiv = document.getElementById("definicao-palavra");
+      if(palavrasManhua[palavra]){
+        defDiv.textContent = `${palavra}: ${palavrasManhua[palavra].definicao}`;
+        imagensCarrossel = palavrasManhua[palavra].imagens;
+        indiceImagem = 0;
+        exibirImagem();
+      } else {
+        defDiv.textContent = `${palavra}: Definição não encontrada.`;
+        imagensCarrossel = [];
+        exibirImagem();
+      }
+    }
+
+    function analisarTexto() {
+      const texto = document.getElementById("input-texto").value.toLowerCase();
+      const palavras = texto.match(/\b[\wãáâéêíóôõúç]+\b/g) || [];
+
+      const freq = {};
+      palavras.forEach(p => freq[p] = (freq[p] || 0) + 1);
+
+      const nuvem = document.getElementById("nuvem-palavras");
+      nuvem.innerHTML = "";
+
+      Object.keys(freq).forEach(palavra => {
+        const span = document.createElement("span");
+        span.textContent = palavra;
+        span.onclick = () => mostrarDefinicao(palavra);
+        nuvem.appendChild(span);
+      });
+    }
+
+    const dicionarioDiv = document.getElementById("dicionario");
+    Object.keys(palavrasManhua).forEach(palavra => {
+      const span = document.createElement("span");
+      span.textContent = palavra;
+      span.onclick = () => mostrarDefinicao(palavra);
+      dicionarioDiv.appendChild(span);
+    });
+
+    // ==== VÍDEO ====
+
+    const videos = [
+      { type: "mp4", url: "https://v1.pinimg.com/videos/mc/720p/22/91/31/229131d11057555fa651474663891bfe.mp4" },
+      { type: "mp4", url: "https://v1.pinimg.com/videos/mc/720p/3e/d3/2b/3ed32b55e31e6126df55be9306f3f445.mp4" },
+      { type: "youtube", url: "https://www.youtube.com/embed/sXCL_VVm89E" }
+    ];
+    let indiceVideo = 0;
+
+    function atualizarVideo() {
+      const video = videos[indiceVideo];
+      const videoElement = document.getElementById("carrossel-video");
+      const iframeElement = document.getElementById("carrossel-iframe");
+
+      if (video.type === "mp4") {
+        iframeElement.style.display = "none";
+        iframeElement.src = "";
+
+        videoElement.style.display = "block";
+        videoElement.src = video.url;
+        videoElement.load();
+        videoElement.play();
+      } else if (video.type === "youtube") {
+        videoElement.pause();
+        videoElement.style.display = "none";
+        videoElement.src = "";
+
+        iframeElement.style.display = "block";
+        iframeElement.src = video.url + "?autoplay=1";
+      }
+    }
+
+    function videoAnterior() {
+      indiceVideo = (indiceVideo - 1 + videos.length) % videos.length;
+      atualizarVideo();
+    }
+
+    function videoProximo() {
+      indiceVideo = (indiceVideo + 1) % videos.length;
+      atualizarVideo();
+    }
+
+    // Inicia primeiro vídeo automaticamente
+    window.onload = atualizarVideo;
+    window.onload = atualizarVideo;
+
+    // 🌸 Corações flutuantes
+    function criarCoracao() {
+      const coracao = document.createElement("div");
+      coracao.classList.add("coracao");
+      coracao.style.left = Math.random() * window.innerWidth + "px";
+      coracao.textContent = "❤️";
+      document.body.appendChild(coracao);
+
+      setTimeout(() => {
+        coracao.remove();
+      }, 5000);
+    }
+
+    setInterval(criarCoracao, 600);
+  </script>
+</body>
+</html>
